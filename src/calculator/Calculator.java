@@ -1,61 +1,83 @@
-
 package calculator;
 
-import java.awt.*; //importing java AWT which contains classes for creating graphical user interfaces
-
+import java.awt.*;
 import java.awt.event.*;
 
-public class Calculator extends Frame { // define class Calculator and extends(inherits) from Frame class (Frame is
-										// basic window in Java's AWT(Abstract Window Toolkit) to create GUI
-										// applications
-	public Calculator() { // constructor of Calculator class {Constructor is a special method called when
-							// object of the class i created
-		setTitle("My Calculator"); // sets title of the window to "My Calculator"
-		setSize(300, 400); // size of window in pixels 300 width and 400 height
-		setLayout(new BorderLayout()); // Border layout for buttons
+public class Calculator extends Frame {
+    private TextField display;
+    private CalculatorLogic logic;
+    private boolean isResultDisplayed = false; // Flag to track if the result is displayed
 
-		TextField display = new TextField(); // Adding a textfield
-		add(display, BorderLayout.NORTH);
+    public Calculator() {
+        setTitle("My Calculator");
+        setSize(300, 400);
+        setLayout(new BorderLayout());
 
-		Panel buttonPanel = new Panel();
-		buttonPanel.setLayout(new GridLayout(5, 4)); // 5 rows, 4 columns grid layout
+        display = new TextField();
+        add(display, BorderLayout.NORTH);
 
-		// Buttons
-		String[] buttonLabels = { "AC", "C", "%", "/", "7", "8", "9", "*", "4", "5", "6", "-", "1", "2", "3", "+", "00",
-				"0", ".", "=" };
+        Panel buttonPanel = new Panel();
+        buttonPanel.setLayout(new GridLayout(5, 4));
 
-		for (String label : buttonLabels) {
-			Button button = new Button(label);
-			buttonPanel.add(button);
-			button.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					// Handle button actions (this part will depend on the functionality)
-					String text = display.getText();
-					if (label.equals("AC")) {
-						display.setText(""); // Clears display
-					} else if (label.equals("C")) {
-						if (text.length() > 0) {
-							display.setText(text.substring(0, text.length() - 1)); // Clears last character
-						}
-					} else if (label.equals("=")) {
-						// Add logic to evaluate expression
-					} else {
-						display.setText(text + label);
-					}
-				}
-			});
-		}
+        String[] buttonLabels = {
+            "AC", "C", "%", "/", "7", "8", "9", "*", 
+            "4", "5", "6", "-", "1", "2", "3", "+", 
+            "00", "0", ".", "="
+        };
 
-		add(buttonPanel, BorderLayout.CENTER); // Add buttons panel below the display field
+        for (String label : buttonLabels) {
+            Button button = new Button(label);
+            buttonPanel.add(button);
 
-		setVisible(true);
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String text = display.getText();
 
-	} // constructor closed
+                    if (label.equals("AC")) {
+                        display.setText("");
+                        isResultDisplayed = false;
+                    } else if (label.equals("C")) {
+                        if (text.length() > 0) {
+                            display.setText(text.substring(0, text.length() - 1));
+                        }
+                    } else if ("+-*/".contains(label)) {
+                        if (isResultDisplayed) {
+                            // Continue operation with the result
+                            isResultDisplayed = false;
+                            display.setText(text + " " + label + " ");
+                        } else {
+                            display.setText(text + " " + label + " ");
+                        }
+                    } else if (label.equals("=")) {
+                        try {
+                            double result = logic.evaluateExpression(text);
+                            display.setText(String.valueOf(result));
+                            isResultDisplayed = true; // Result is displayed
+                        } catch (Exception ex) {
+                            display.setText("Error");
+                            isResultDisplayed = false;
+                        }
+                    } else {
+                        if (isResultDisplayed) {
+                            // Clear display on new number input after result
+                            display.setText(label);
+                            isResultDisplayed = false;
+                        } else {
+                            display.setText(text + label);
+                        }
+                    }
+                }
+            });
+        }
 
-	public static void main(String[] args) { // main method where java program begins execution
-		new Calculator(); // creates an instance(object) of the Calculator class which calls the
-							// constructor and displays the window
+        add(buttonPanel, BorderLayout.CENTER);
+        setVisible(true);
 
-	}
+        logic = new CalculatorLogic(); // Initialize logic after GUI setup
+    }
 
+    public static void main(String[] args) {
+        new Calculator();
+    }
 }
+
