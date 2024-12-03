@@ -1,4 +1,5 @@
 Overview
+
 This project implements a Graphical User Interface (GUI) Calculator in Java. It supports basic arithmetic operations, including addition, subtraction, multiplication, and division, and allows chaining of expressions for continuous calculations. The design ensures a clean display of expressions and results, enhancing usability.
 
 Features
@@ -6,7 +7,10 @@ Basic Arithmetic: Supports +, -, *, /.
 Expression Continuation: Allows operations to continue after displaying results.
 Clear Operations: Includes options for clearing the display (C) and resetting the calculator (AC).
 Error Handling: Handles division by zero and invalid expressions gracefully.
+
 GUI Design: Interactive interface built using Java AWT.
+
+
 Requirements
 Java Development Kit (JDK) 8 or higher.
 Basic knowledge of Java to run the program.
